@@ -44,8 +44,10 @@ public class Login extends HttpServlet {
         //connect to db
         try {
             Class.forName("com.mysql.jdbc.Driver");
-            Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/minicab?useSSL=false", "root", "root");
-             
+            Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/minicab?useSSL=false", "root", "dJw3426A@");
+            //Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/minicab?useSSL=false", "root", "root");
+            //Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/minicab?useSSL=false", "root", "pitiri");
+            
             Statement stm = con.createStatement();
             String sql = "select * from users where username='"+username+"' and password='"+password+"'";
             ResultSet rs = stm.executeQuery(sql);
