@@ -11,6 +11,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -44,17 +45,21 @@ public class Login extends HttpServlet {
         //connect to db
         try {
             Class.forName("com.mysql.jdbc.Driver");
-            Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/minicab?useSSL=false", "root", "dJw3426A@");
-            //Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/minicab?useSSL=false", "root", "root");
+            //Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/minicab?useSSL=false", "root", "dJw3426A@");
+            Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/minicab?useSSL=false", "root", "root");
             //Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/minicab?useSSL=false", "root", "pitiri");
             
 
             Statement stm = con.createStatement();
-            String sql = "select * from users where username='"+username+"' and password='"+password+"'";
+            String sql = "select username, password, role from users where username='"+username+"' and password='"+password+"'";
             ResultSet rs = stm.executeQuery(sql);
             
             if (rs.next()) {
-                response.sendRedirect("Home.html");
+                HttpSession session = request.getSession(); //Creating a session
+                session.setMaxInactiveInterval(20 * 60);
+                session.setAttribute("role", rs.getString("role"));
+                session.setAttribute("username", username);
+                response.sendRedirect("home.jsp");
             } else {
                 out.println("Username or password incorrect");
             }

@@ -35,7 +35,7 @@ public class Customer {
         try {
             String sql = "SELECT FULLNAME, USERNAME, EMAIL FROM USERS WHERE USERROLE = 'Customer'";
             Class.forName("com.mysql.jdbc.Driver");
-            con = DriverManager.getConnection("jdbc:mysql://localhost:3306/minicab?useSSL=false", "root", "pitiri");
+            con = DriverManager.getConnection("jdbc:mysql://localhost:3306/minicab?useSSL=false", "root", "root");
             stm = con.prepareStatement(sql);
             
         while (rs.next()) {
@@ -74,7 +74,7 @@ public class Customer {
             String sql = "DELETE FROM USERS WHERE EMAIL = ?";
 
             Class.forName("com.mysql.jdbc.Driver");
-            con = DriverManager.getConnection("jdbc:mysql://localhost:3306/minicab?useSSL=false", "root", "pitiri");
+            con = DriverManager.getConnection("jdbc:mysql://localhost:3306/minicab?useSSL=false", "root", "root");
             stm = con.prepareStatement(sql);
             stm.setString(1,customer.getEmail() );
             
@@ -106,7 +106,7 @@ public class Customer {
             String sql = "UPDATE USERS SET FULLNAME=?,USERNAME=? WHERE EMAIL=?";
 
             Class.forName("com.mysql.jdbc.Driver");
-            con = DriverManager.getConnection("jdbc:mysql://localhost:3306/minicab?useSSL=false", "root", "pitiri");
+            con = DriverManager.getConnection("jdbc:mysql://localhost:3306/minicab?useSSL=false", "root", "root");
             stm = con.prepareStatement(sql);
             
             stm.setString(1,customer.getFirstName());
@@ -138,7 +138,7 @@ public class Customer {
             String sql = "DELETE FROM Customer WHERE EMAIL = ?";
 
             Class.forName("com.mysql.jdbc.Driver");
-            con = DriverManager.getConnection("jdbc:mysql://localhost:3306/minicab?useSSL=false", "root", "pitiri");
+            con = DriverManager.getConnection("jdbc:mysql://localhost:3306/minicab?useSSL=false", "root", "root");
             stm = con.prepareStatement(sql);
             stm.setString(1,customer.getEmail() );
             

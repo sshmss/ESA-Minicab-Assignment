@@ -21,7 +21,9 @@
             <h4 class="text-center text-warning logo">MINIC<span class="material-icons-outlined text-warning mt-2">local_taxi</span>B
             </h4>
             <a href="#" class="text-warning">Home</a>
+            <%= session.getAttribute("username") %>
         </nav>
+        
             
         
         <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
