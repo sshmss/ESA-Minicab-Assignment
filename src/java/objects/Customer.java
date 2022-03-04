@@ -44,12 +44,12 @@ public class Customer {
                 userName = rs.getString("USERNAME");
                 email = rs.getString("EMAIL");
 
-                Users driver = new Users();
-                driver.setFirstName(fullName);
-                driver.setLastName(userName);
-                driver.setEmail(email);
+                Users add = new Users();
+                add.setFirstName(fullName);
+                add.setLastName(userName);
+                add.setEmail(email);
                
-                customers.add(driver);
+                customers.add(add);
             }   
             
         con.close();
@@ -64,6 +64,94 @@ public class Customer {
         
     }
     
+    public String deleteCustomer(Users customer) throws ClassNotFoundException {
+        Connection con = null;
+        PreparedStatement  stm = null;
+        ResultSet rs = null;
+
+        try {
+
+            String sql = "DELETE FROM USERS WHERE EMAIL = ?";
+
+            Class.forName("com.mysql.jdbc.Driver");
+            con = DriverManager.getConnection("jdbc:mysql://localhost:3306/minicab?useSSL=false", "root", "pitiri");
+            stm = con.prepareStatement(sql);
+            stm.setString(1,customer.getEmail() );
+            
+            int row = stm.executeUpdate();
+            System.out.println(row);
+
+            
+            
+
+            con.close();
+            deleteFromCustomerTable(customer);
+            return "OK";
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return "Oops.. Something went wrong there..!";  // On failure, send a message from here.
+    }
+    
+    public String updateCustomer(Users customer) throws ClassNotFoundException {
+        
+        Connection con = null;
+        PreparedStatement  stm = null;
+        ResultSet rs = null;
+
+        try {
+
+            String sql = "UPDATE USERS SET FULLNAME=?,USERNAME=? WHERE EMAIL=?";
+
+            Class.forName("com.mysql.jdbc.Driver");
+            con = DriverManager.getConnection("jdbc:mysql://localhost:3306/minicab?useSSL=false", "root", "pitiri");
+            stm = con.prepareStatement(sql);
+            
+            stm.setString(1,customer.getFirstName());
+            stm.setString(2,customer.getLastName());
+            stm.setString(3,customer.getEmail());
+            
+            int row = stm.executeUpdate();
+            System.out.println(row);
+
+           
+            
+            con.close();
+            
+            return "OK";
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return "Oops.. Something went wrong there..!";  // On failure, send a message from here.
+    }
+    
+    private void deleteFromCustomerTable(Users customer) throws ClassNotFoundException
+    {
+        Connection con = null;
+        PreparedStatement  stm = null;
+
+        try {
+            String sql = "DELETE FROM Customer WHERE EMAIL = ?";
+
+            Class.forName("com.mysql.jdbc.Driver");
+            con = DriverManager.getConnection("jdbc:mysql://localhost:3306/minicab?useSSL=false", "root", "pitiri");
+            stm = con.prepareStatement(sql);
+            stm.setString(1,customer.getEmail() );
+            
+            int row = stm.executeUpdate();
+            System.out.println(row);
+            con.close();
+            
+            System.out.println("Removed from customer Table");
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
     
     
 }
