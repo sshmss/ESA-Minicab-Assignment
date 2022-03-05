@@ -61,7 +61,7 @@ public class Login extends HttpServlet {
                 session.setMaxInactiveInterval(20 * 60);
                 session.setAttribute("role", rs.getString("role"));
                 session.setAttribute("username", username);
-                response.sendRedirect("customer.html");
+                response.sendRedirect("customer.jsp");
             } else {
                 out.println("Username or password incorrect");
             }
