@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package objects;
+package dao;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -19,14 +19,14 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import models.Customers;
-import models.Users;
+import models.User;
 
 /**
  *
  * @author ahsan_764ad7k
  */
-public class Customer {
-    public String listOfCustomers(ArrayList<Users> customers) throws ClassNotFoundException {
+public class UserDAO {
+    public String listOfCustomers(ArrayList<User> customers) throws ClassNotFoundException {
         Connection con = null;
         PreparedStatement  stm = null;
         ResultSet rs = null;
@@ -43,13 +43,6 @@ public class Customer {
                 fullName = rs.getString("FULLNAME");
                 userName = rs.getString("USERNAME");
                 email = rs.getString("EMAIL");
-
-                Users add = new Users();
-                add.setFirstName(fullName);
-                add.setLastName(userName);
-                add.setEmail(email);
-               
-                customers.add(add);
             }   
             
         con.close();
@@ -64,19 +57,46 @@ public class Customer {
         
     }
     
-    public String deleteCustomer(Users customer) throws ClassNotFoundException {
+    public boolean addCustomer(User customer) throws ClassNotFoundException {
+        PreparedStatement  stm = null;
+        ResultSet rs = null;
+
+        try {
+            String sql = "INSERT into users (username, password, role) VALUES (?,?,?)";   
+            Class.forName("com.mysql.jdbc.Driver");
+            Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/minicab?useSSL=false", "root", "root");
+
+            stm = con.prepareStatement(sql);
+            stm.setString(1, customer.getUsername());
+            stm.setString(2, customer.getPassword());         
+            stm.setString(3, "customer");
+
+            
+            stm.executeUpdate();
+
+            con.close();
+            return true;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return false;  // On failure, send a message from here.
+    }
+    
+    public String deleteCustomer(User customer) throws ClassNotFoundException {
         Connection con = null;
         PreparedStatement  stm = null;
         ResultSet rs = null;
 
         try {
 
-            String sql = "DELETE FROM USERS WHERE EMAIL = ?";
+            String sql = "DELETE FROM USERS WHERE username = ?";
 
             Class.forName("com.mysql.jdbc.Driver");
             con = DriverManager.getConnection("jdbc:mysql://localhost:3306/minicab?useSSL=false", "root", "root");
             stm = con.prepareStatement(sql);
-            stm.setString(1,customer.getEmail() );
+            stm.setString(1,customer.getUsername() );
             
             int row = stm.executeUpdate();
             System.out.println(row);
@@ -95,7 +115,7 @@ public class Customer {
         return "Oops.. Something went wrong there..!";  // On failure, send a message from here.
     }
     
-    public String updateCustomer(Users customer) throws ClassNotFoundException {
+    public String updateCustomer(User customer) throws ClassNotFoundException {
         
         Connection con = null;
         PreparedStatement  stm = null;
@@ -103,15 +123,14 @@ public class Customer {
 
         try {
 
-            String sql = "UPDATE USERS SET FULLNAME=?,USERNAME=? WHERE EMAIL=?";
+            String sql = "UPDATE USERS SET password=? WHERE username=?";
 
             Class.forName("com.mysql.jdbc.Driver");
             con = DriverManager.getConnection("jdbc:mysql://localhost:3306/minicab?useSSL=false", "root", "root");
             stm = con.prepareStatement(sql);
             
-            stm.setString(1,customer.getFirstName());
-            stm.setString(2,customer.getLastName());
-            stm.setString(3,customer.getEmail());
+            stm.setString(1,customer.getPassword());
+            stm.setString(2,customer.getUsername());            
             
             int row = stm.executeUpdate();
             System.out.println(row);
@@ -129,7 +148,7 @@ public class Customer {
         return "Oops.. Something went wrong there..!";  // On failure, send a message from here.
     }
     
-    private void deleteFromCustomerTable(Users customer) throws ClassNotFoundException
+    private void deleteFromCustomerTable(User customer) throws ClassNotFoundException
     {
         Connection con = null;
         PreparedStatement  stm = null;
@@ -140,7 +159,7 @@ public class Customer {
             Class.forName("com.mysql.jdbc.Driver");
             con = DriverManager.getConnection("jdbc:mysql://localhost:3306/minicab?useSSL=false", "root", "root");
             stm = con.prepareStatement(sql);
-            stm.setString(1,customer.getEmail() );
+            stm.setString(1,customer.getUsername() );
             
             int row = stm.executeUpdate();
             System.out.println(row);
