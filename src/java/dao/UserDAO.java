@@ -57,6 +57,42 @@ public class UserDAO {
         
     }
     
+    public User getUserByUsername(String username) throws ClassNotFoundException {
+        Connection con = null;
+        PreparedStatement  stm = null;
+        String password = null, role = null;
+        int id = 0;
+        
+        try {
+            String sql = "SELECT * FROM users WHERE username = ?";
+            Class.forName("com.mysql.jdbc.Driver");
+            con = DriverManager.getConnection("jdbc:mysql://localhost:3306/minicab?useSSL=false", "root", "root");
+            stm = con.prepareStatement(sql);
+            stm.setString(1, username);
+            ResultSet rs = stm.executeQuery();
+            
+        while (rs.next()) {
+                
+                password = rs.getString("password");
+                role = rs.getString("role");
+                id = rs.getInt("id");
+
+            }   
+            
+        con.close();
+        
+        User user = new User(username, password, role);
+        user.setId(id);
+        return user;
+        } catch (SQLException e) {
+             e.printStackTrace();
+        }
+        
+        
+        return null;
+        
+    }
+    
     public boolean addCustomer(User customer) throws ClassNotFoundException {
         PreparedStatement  stm = null;
         ResultSet rs = null;

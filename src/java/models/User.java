@@ -13,6 +13,15 @@ public class User implements java.io.Serializable{
 
     public String username;
     private String password, role;
+    private int id;
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 
     public User(String username, String password, String role) {
         this.username = username;
