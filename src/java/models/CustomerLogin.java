@@ -10,7 +10,8 @@ package models;
  * @author ahsan_764ad7k
  */
 public class CustomerLogin {
-    private String username, email, password, customerID, address;
+    private String username, email, password, address;
+    private int id;
 
     public String getUsername() {
         return username;
@@ -36,13 +37,7 @@ public class CustomerLogin {
         this.password = password;
     }
 
-    public String getCustomerID() {
-        return customerID;
-    }
-
-    public void setCustomerID(String customerID) {
-        this.customerID = customerID;
-    }
+    
 
     public String getAddress() {
         return address;
@@ -50,6 +45,14 @@ public class CustomerLogin {
 
     public void setAddress(String address) {
         this.address = address;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
     
     
