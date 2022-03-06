@@ -24,7 +24,7 @@ import java.sql.Statement;
  * @author Hisan
  */
 @WebServlet(urlPatterns = {"/login"})
-public class Login extends HttpServlet {
+public class LoginController extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -39,7 +39,6 @@ public class Login extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html");
         PrintWriter out = response.getWriter();
-        
         // take username and password from index.html file
         String username = request.getParameter("username");
         String password = request.getParameter("password");
@@ -50,16 +49,16 @@ public class Login extends HttpServlet {
             //Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/minicab?useSSL=false", "root", "dJw3426A@");
             Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/minicab?useSSL=false", "root", "root");
             //Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/minicab?useSSL=false", "root", "pitiri");
-            
 
             Statement stm = con.createStatement();
-            String sql = "select username, password, role from users where username='"+username+"' and password='"+password+"'";
+            String sql = "select id, username, password, role from users where username='"+username+"' and password='"+password+"'";
             ResultSet rs = stm.executeQuery(sql);
             
             if (rs.next()) {
                 HttpSession session = request.getSession(); //Creating a session
                 session.setMaxInactiveInterval(20 * 60);
                 session.setAttribute("role", rs.getString("role"));
+                session.setAttribute("userId", rs.getInt("id"));
                 session.setAttribute("username", username);
                 response.sendRedirect("customer.jsp");
             } else {

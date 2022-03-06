@@ -12,15 +12,30 @@ import java.util.Date;
  * @author Hisan
  */
 public class Trip {
+    private int id;
+
+    
     private String pickupLoc, destinationLoc, status;
     private float distance;
     private Date requestTime;
     private User passenger, driver;
     private Payment payment;
 
-    public Trip() {
+    public Trip(int id, String pickupLoc, String destinationLoc, String status, Date requestTime, Payment payment, User driver) {
+        this.id = id;
+        this.pickupLoc = pickupLoc;
+        this.destinationLoc = destinationLoc;
+        this.status = status;
+        this.requestTime = requestTime;
+        this.payment = payment;
+        this.driver = driver;
     }
-
+    public Trip () {
+    }
+    
+    public int getId() {
+        return id;
+    }
     public String getStatus() {
         return status;
     }

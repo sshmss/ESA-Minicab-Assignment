@@ -1,4 +1,7 @@
 <!doctype html>
+<%@page import="models.User"%>
+<%@page import="models.Trip"%>
+<%@page import="java.util.ArrayList"%>
 <html lang="en">
   <head>
     <!-- Required meta tags -->
@@ -27,40 +30,62 @@
             <ul class="nav-links"></li>
             <li> <a href="" class="text-warning">Admin</a></li>
             <li> <a href="customer.jsp" class="text-warning">Customer</a></li>
-            <li> <a href="driver.jsp" class="text-warning">Driver</a></li>
+            <li> <a href="driver" class="text-warning">Driver</a></li>
             </ul>
             <ul class="Login">
                 <li><a href="register.html">Sign Up</a></li>
                 <li><a href="index.html">Login</a></li>
+                <li><a href="index.html"><%= session.getAttribute("username") %></a></li>
                 </ul>
             </div>
          </nav>
-
-        <div class="wrapper">
-            <div class="button">
-                <div class="icon"><ion-icon name="add-outline"></ion-icon></div>
-                   <span>Add Driver</span>
-            </div>
-
-            <div class="button">
-                 <div class="icon"><ion-icon name="search-outline"></ion-icon></div>
-                    <span>Search Requests</span>
-            </div>
-
-            <div class="button">
-                 <div class="icon"><ion-icon name="person-outline"></ion-icon></div>
-                    <span>Customer</span>
-            </div>
-
-            <div class="button">
-                 <div class="icon"><ion-icon name="car-sharp"></ion-icon></div>
-                    <span>Driver</span>
-             </div>
-         </div>
-     </div>
-
-     <div class="requests">
-         <h4><u>Recent Requests</u></h4>
+        <div class="container pa-4">
+            <h1 style="margin-top: 60px; margin-bottom: 60px;">Admin</h1>
+            <h4 class="my-4">Users</h4>
+            <table class="table mt-4" style="margin-bottom: 100px;">
+                <thead>
+                  <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Username</th>
+                    <th scope="col">Role</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <% ArrayList<User> users = (ArrayList<User>) request.getAttribute("nonAdmins");
+                for (int i = 0; i < users.size(); i++) {%>
+                  <tr>
+                    <th scope="row"><%= users.get(i).getId()%></th>
+                    <td><%= users.get(i).getUsername()%></td>
+                    <td><%= users.get(i).getRole()%></td>
+                  </tr>
+                  <% }%> 
+                </tbody>
+              </table>
+            <h4 class="my-4">Trips</h4>
+            <table class="table">
+                <thead>
+                  <tr>
+                    <th scope="col">Pickup Location</th>
+                    <th scope="col">Destination</th>
+                    <th scope="col">Status</th>
+                    <th scope="col">Request Time</th>
+                    <th scope="col">Total Amount</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <% ArrayList<Trip> trips = (ArrayList<Trip>) request.getAttribute("trips");
+                for (int i = 0; i < trips.size(); i++) {%>
+                  <tr>
+                    <th scope="row"><%= trips.get(i).getPickupLoc()%></th>
+                    <td><%= trips.get(i).getDestinationLoc()%></td>
+                    <td><%= trips.get(i).getStatus()%></td>
+                    <td><%= trips.get(i).getRequestTime()%></td>
+                    <td><%= trips.get(i).getPayment().getTotalAmt()%></td>
+                  </tr>
+                  <% }%> 
+                </tbody>
+              </table>
+        </div>
      </div>
 
 

@@ -22,15 +22,15 @@
             </h4>
 
             <ul class="nav-links">
-                <li> <a href="admin.html" class="text-warning">Admin</a></li>
+                <li> <a href="admin" class="text-warning">Admin</a></li>
                 <li> <a href="" class="text-warning">Customer</a></li>
-                <li> <a href="driver.html" class="text-warning">Driver</a></li>
+                <li> <a href="driver" class="text-warning">Driver</a></li>
             </ul>
             <ul class="Login">
                 <li><a href="register.html">Sign Up</a></li>
                 <li><a href="index.html">Login</a></li>
+                <li style="color: yellow;"><%= session.getAttribute("username")%></li>
                 </ul>
-            <%= session.getAttribute("username") %>
          </nav>
         <div class="container">
             <div class="row">

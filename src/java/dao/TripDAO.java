@@ -4,6 +4,7 @@
  * and open the template in the editor.
  */
 package dao;
+import controllers.AdminController;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -20,6 +21,8 @@ import java.sql.Statement;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import models.Customers;
 import models.Payment;
 import models.User;
@@ -70,22 +73,36 @@ public class TripDAO {
 
         return false;  // On failure, send a message from here.
     }
-    public boolean cancelTrip(Trip trip) throws ClassNotFoundException {
+    public boolean updateTripStatus(int tripId) {
         PreparedStatement  stm = null;
-        ResultSet rs = null;
 
         try {
-            String sql = "UPDATE trips SET status = ?";   
-            Class.forName("com.mysql.jdbc.Driver");
+            try {
+                Class.forName("com.mysql.jdbc.Driver");
+            } catch (ClassNotFoundException e) {
+                Logger.getLogger(AdminController.class.getName()).log(Level.SEVERE, null, e);
+            }
             Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/minicab?useSSL=false", "root", "root");
-
-            String status = "taken";
+            String sql = "SELECT status FROM trips WHERE trip_id = ?";
+            stm = con.prepareStatement(sql);
+            stm.setInt(1, tripId);
+            
+            ResultSet rs = stm.executeQuery();
+            String status = null;
+            while (rs.next()) {
+                if (rs.getString("status").equals("taken")) {
+                    status = "open";
+                } else {
+                    status = "taken";
+                }
+            }
+            sql = "UPDATE trips SET status = ? where trip_id = ?";   
+            
             stm = con.prepareStatement(sql);
             stm.setString(1, status);
-
-            
+            stm.setInt(2, tripId);
             stm.executeUpdate();
-
+            
             con.close();
             return true;
 
@@ -95,5 +112,35 @@ public class TripDAO {
 
         return false;  // On failure, send a message from here.
     }
-    
+    public ArrayList<Trip> listOfTrips() throws ServletException, IOException {
+        Connection con = null;
+        ArrayList<Trip> trips = new ArrayList<>();
+        try {
+            try {
+                Class.forName("com.mysql.jdbc.Driver");
+            } catch (ClassNotFoundException e) {
+                Logger.getLogger(AdminController.class.getName()).log(Level.SEVERE, null, e);
+            }
+            con = DriverManager.getConnection("jdbc:mysql://localhost:3306/minicab?useSSL=false", "root", "root");
+            Statement stm = con.createStatement();
+            String sql = "SELECT * FROM trips INNER JOIN payments ON (trips.payment_id=payments.payment_id) LEFT JOIN users ON (trips.driver_id=users.id) ORDER BY request_time DESC";
+            ResultSet rs = stm.executeQuery(sql);
+        while (rs.next()) {
+                Payment payment = new Payment(rs.getFloat("fixed_amt"), rs.getFloat("fare_amt"), rs.getFloat("total_amt"));
+                User driver = new User(rs.getInt("id"), rs.getString("username"), rs.getString("password"), rs.getString("role"));
+                Trip trip = new Trip(rs.getInt("trip_id"), rs.getString("pickup_loc"), rs.getString("destination_loc"), rs.getString("status"), rs.getDate("request_time"), payment, driver);
+                trips.add(trip);
+            }
+            
+        con.close();
+        System.out.println(trips);
+
+        return trips;
+        } catch (SQLException e) {
+             e.printStackTrace();
+        }
+        
+        return trips;
+        
+    }
 }

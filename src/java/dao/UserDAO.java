@@ -4,6 +4,7 @@
  * and open the template in the editor.
  */
 package dao;
+import controllers.AdminController;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -18,6 +19,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import models.Customers;
 import models.User;
 
@@ -26,6 +29,7 @@ import models.User;
  * @author ahsan_764ad7k
  */
 public class UserDAO {
+    
     public String listOfCustomers(ArrayList<User> customers) throws ClassNotFoundException {
         Connection con = null;
         PreparedStatement  stm = null;
@@ -57,6 +61,36 @@ public class UserDAO {
         
     }
     
+    public ArrayList<User> listOfNonAdmins() throws ServletException, IOException {
+        Connection con = null;
+        ArrayList<User> users = new ArrayList<>();
+        try {
+            try {
+                Class.forName("com.mysql.jdbc.Driver");
+            } catch (ClassNotFoundException e) {
+                Logger.getLogger(AdminController.class.getName()).log(Level.SEVERE, null, e);
+            }
+            con = DriverManager.getConnection("jdbc:mysql://localhost:3306/minicab?useSSL=false", "root", "root");
+            Statement stm = con.createStatement();
+            String sql = "SELECT * FROM USERS WHERE role != 'admin'";
+            ResultSet rs = stm.executeQuery(sql);
+        while (rs.next()) {
+                User user = new User(rs.getInt("id"), rs.getString("username"), rs.getString("password"), rs.getString("role"));
+                users.add(user);
+            }
+            
+        con.close();
+        System.out.println(users);
+
+        return users;
+        } catch (SQLException e) {
+             e.printStackTrace();
+        }
+        
+        return users;
+        
+    }
+    
     public User getUserByUsername(String username) throws ClassNotFoundException {
         Connection con = null;
         PreparedStatement  stm = null;
@@ -81,8 +115,39 @@ public class UserDAO {
             
         con.close();
         
-        User user = new User(username, password, role);
-        user.setId(id);
+        User user = new User(id, username, password, role);
+        return user;
+        } catch (SQLException e) {
+             e.printStackTrace();
+        }
+        
+        
+        return null;
+        
+    }
+    
+    public User getUserById(int id) throws ClassNotFoundException {
+        Connection con = null;
+        PreparedStatement  stm = null;
+        String password = null, role = null;
+        User user = null;
+        
+        try {
+            String sql = "SELECT * FROM users WHERE id = ?";
+            Class.forName("com.mysql.jdbc.Driver");
+            con = DriverManager.getConnection("jdbc:mysql://localhost:3306/minicab?useSSL=false", "root", "root");
+            stm = con.prepareStatement(sql);
+            stm.setInt(1, id);
+            ResultSet rs = stm.executeQuery();
+            
+        while (rs.next()) {
+                
+                user = new User(rs.getInt("id"), rs.getString("username"), rs.getString("password"), rs.getString("role"));
+
+            }   
+            
+        con.close();
+        
         return user;
         } catch (SQLException e) {
              e.printStackTrace();

@@ -6,8 +6,6 @@ package controllers;
  * and open the template in the editor.
  */
 
-import dao.TripDAO;
-import dao.UserDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -20,17 +18,13 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
-import models.Payment;
-import models.User;
-import models.Trip;
-
 
 /**
  *
  * @author Hisan
  */
-@WebServlet(urlPatterns = {"/customer"})
-public class Customer extends HttpServlet {
+@WebServlet(urlPatterns = {"/register"})
+public class RegisterController extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -47,45 +41,32 @@ public class Customer extends HttpServlet {
         PrintWriter out = response.getWriter();
         
         // take username and password from index.html file
-        String pickup = request.getParameter("pickup");
-        String desti = request.getParameter("desti");
-        String distance = request.getParameter("distance");
-        String fixedPrice = request.getParameter("fixedPrice");
-        String farePrice = request.getParameter("farePrice");
-        String totalPrice = request.getParameter("totalPrice");
-        
+        String username = request.getParameter("username");
+        String password = request.getParameter("password");
+        String confirmPassword = request.getParameter("confirmPassword");
         
         //connect to db
         try {
-            UserDAO dao = new UserDAO();
-            User user = dao.getUserByUsername(request.getSession().getAttribute("username").toString());
-            Trip trip = new Trip();
-            System.out.println(pickup);
-            trip.setPickupLoc(pickup);
-            System.out.println(desti);
-            trip.setDestinationLoc(desti);
-            trip.setDistance(Float.parseFloat(distance));
-            trip.setPassenger(user);
+            Class.forName("com.mysql.jdbc.Driver");
+            //Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/minicab?useSSL=false", "root", "dJw3426A@");
+            Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/minicab?useSSL=false", "root", "root");
+            //Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/minicab?useSSL=false", "root", "pitiri");
             
-            Payment payment = new Payment();
-            payment.setFixedAmt(Float.parseFloat(fixedPrice));
-            payment.setFareAmt(Float.parseFloat(farePrice));
-            payment.setTotalAmt(Float.parseFloat(totalPrice));
+
+            Statement stm = con.createStatement();
+            String sql = "select username, password, role from users where username='"+username+"' and password='"+password+"'";
+            ResultSet rs = stm.executeQuery(sql);
             
-            trip.setPayment(payment);
-            
-            
-            TripDAO tripDAO = new TripDAO();
-            
-            boolean res = tripDAO.addTrip(trip);
-            if (res) {
-                response.sendRedirect("index.html");
+            if (rs.next()) {
+                HttpSession session = request.getSession(); //Creating a session
+                session.setMaxInactiveInterval(20 * 60);
+                session.setAttribute("role", rs.getString("role"));
+                session.setAttribute("username", username);
+                response.sendRedirect("home.jsp");
+            } else {
+                out.println("Username or password incorrect");
             }
-            else {
-                out.println("Error occured in creatine user");
-            }
-            
-            
+            con.close();
         } catch(Exception e) {
             System.out.println(e.getMessage());
         }
