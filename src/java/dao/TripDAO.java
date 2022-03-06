@@ -91,9 +91,11 @@ public class TripDAO {
             Integer drive = null;
             while (rs.next()) {
                 if (rs.getString("status").equals("taken")) {
+                    System.out.println("MILKERS");
                     status = "open";
                 } else {
                     status = "taken";
+                    System.out.println("Mommy");
                     drive = driverId;
                 }
             }
@@ -101,7 +103,14 @@ public class TripDAO {
             
             stm = con.prepareStatement(sql);
             stm.setString(1, status);
-            stm.setInt(2, drive);
+            System.out.println(driverId);
+            System.out.println(drive);
+            System.out.println(tripId);
+            if (drive == null) {
+                stm.setNull(2, java.sql.Types.INTEGER);
+            } else {
+                stm.setInt(2, drive);
+            }
             stm.setInt(3, tripId);
             stm.executeUpdate();
             
