@@ -26,28 +26,25 @@
         <nav class="navbar navbar-dark bg-dark">
             <h4 class="text-center text-warning logo">MINIC<span class="material-icons-outlined text-warning mt-2">local_taxi</span>B
             </h4>
-
-            <ul class="nav-links"></li>
-            <li> <a href="" class="text-warning">Admin</a></li>
-            <li> <a href="customer.jsp" class="text-warning">Customer</a></li>
-            <li> <a href="driver" class="text-warning">Driver</a></li>
-            </ul>
             <ul class="Login">
-                <li><a href="register.html">Sign Up</a></li>
+                <li><a href="register?role=customer">Sign Up</a></li>
                 <li><a href="index.html">Login</a></li>
                 <li><a href="index.html"><%= session.getAttribute("username") %></a></li>
                 </ul>
             </div>
          </nav>
         <div class="container pa-4">
-            <h1 style="margin-top: 60px; margin-bottom: 60px;">Admin</h1>
+            <h1 style="margin-top: 60px;">Admin</h1>
+            <a style="margin-bottom: 60px;" href="register?role=driver" class="btn btn-dark btn-lg active float-right" role="button" aria-pressed="true">Add Driver</a>
             <h4 class="my-4">Users</h4>
+            <form action="admin" method="post">
             <table class="table mt-4" style="margin-bottom: 100px;">
                 <thead>
                   <tr>
                     <th scope="col">#</th>
                     <th scope="col">Username</th>
                     <th scope="col">Role</th>
+                    <th scope="col"></th>
                   </tr>
                 </thead>
                 <tbody>
@@ -57,10 +54,16 @@
                     <th scope="row"><%= users.get(i).getId()%></th>
                     <td><%= users.get(i).getUsername()%></td>
                     <td><%= users.get(i).getRole()%></td>
+                    <td>
+                        <% if (users.get(i).getRole().equals("driver")) { %>
+                            <button name="remove" value="<%= users.get(i).getId() %>" act type="submit" class="btn btn-dark">Remove</button>
+                        <% } %>
+                    </td>
                   </tr>
                   <% }%> 
                 </tbody>
               </table>
+            </form>
             <h4 class="my-4">Trips</h4>
             <table class="table">
                 <thead>

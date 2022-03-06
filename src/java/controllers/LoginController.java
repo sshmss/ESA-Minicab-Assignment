@@ -60,7 +60,7 @@ public class LoginController extends HttpServlet {
                 session.setAttribute("role", rs.getString("role"));
                 session.setAttribute("userId", rs.getInt("id"));
                 session.setAttribute("username", username);
-                response.sendRedirect("customer.jsp");
+                response.sendRedirect(rs.getString("role"));
             } else {
                 out.println("Username or password incorrect");
             }

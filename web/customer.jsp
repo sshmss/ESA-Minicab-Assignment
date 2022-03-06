@@ -1,4 +1,6 @@
 <!doctype html>
+<%@page import="models.Trip"%>
+<%@page import="java.util.ArrayList"%>
 <html lang="en">
   <head>
     <!-- Required meta tags -->
@@ -20,14 +22,8 @@
         <nav class="navbar navbar-dark bg-dark">
             <h4 class="text-center text-warning logo">MINIC<span class="material-icons-outlined text-warning mt-2">local_taxi</span>B
             </h4>
-
-            <ul class="nav-links">
-                <li> <a href="admin" class="text-warning">Admin</a></li>
-                <li> <a href="" class="text-warning">Customer</a></li>
-                <li> <a href="driver" class="text-warning">Driver</a></li>
-            </ul>
             <ul class="Login">
-                <li><a href="register.html">Sign Up</a></li>
+                <li><a href="register?role=customer">Sign Up</a></li>
                 <li><a href="index.html">Login</a></li>
                 <li style="color: yellow;"><%= session.getAttribute("username")%></li>
                 </ul>
@@ -70,6 +66,45 @@
                 <div class="col mt-4">
                     <div id="googleMap"></div>
                 </div>
+            </div>
+            <br>
+                        <br>
+
+                                    <br>
+
+            <hr>
+            <h4 class="my-4">My Trips</h4>
+            <div class="row">
+            <form action="customer" method="post">
+                <table class="table">
+                    <thead>
+                      <tr>
+                        <th scope="col">Pickup Location</th>
+                        <th scope="col">Destination</th>
+                        <th scope="col">Status</th>
+                        <th scope="col">Request Time</th>
+                        <th scope="col">Total Amount</th>
+                        <th scope="col"></th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                        <% ArrayList<Trip> trips = (ArrayList<Trip>) request.getAttribute("trips");
+                    for (int i = 0; i < trips.size(); i++) {%>
+                      <tr>
+                        <th scope="row"><%= trips.get(i).getPickupLoc()%></th>
+                        <td><%= trips.get(i).getDestinationLoc()%></td>
+                        <td><%= trips.get(i).getStatus()%></td>
+                        <td><%= trips.get(i).getRequestTime()%></td>
+                        <td><%= trips.get(i).getPayment().getTotalAmt()%></td>
+                        <td>
+                            <% if (trips.get(i).getStatus().equals("open")) { %>
+                                <button name="cancel" value="<%= trips.get(i).getId()%>" act type="submit" class="btn btn-dark">Cancel</button>
+                            <% } %>
+                        </td>
+                      </tr>
+                      <% }%> 
+                    </tbody>
+                </table>
             </div>
         </div>
             

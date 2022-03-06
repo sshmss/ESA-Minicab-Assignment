@@ -25,14 +25,8 @@
         <nav class="navbar navbar-dark bg-dark">
             <h4 class="text-center text-warning logo">MINIC<span class="material-icons-outlined text-warning mt-2">local_taxi</span>B
             </h4>
-
-            <ul class="nav-links"></li>
-            <li> <a href="admin" class="text-warning">Admin</a></li>
-            <li> <a href="customer.jsp" class="text-warning">Customer</a></li>
-            <li> <a href="" class="text-warning">Driver</a></li>
-            </ul>
             <ul class="Login">
-                <li><a href="register.html">Sign Up</a></li>
+                <li><a href="register?role=customer">Sign Up</a></li>
                 <li><a href="index.html">Login</a></li>
                 <li><a href="index.html"><%= session.getAttribute("username") %></a></li>
                 </ul>
@@ -68,6 +62,7 @@
                             <% }  else if (trips.get(i).getStatus().equals("taken") && session.getAttribute("userId").equals(trips.get(i).getDriver().getId())) { %>
                                 <input class="form-control form-control-sm" type="text" placeholder="Reason">
                                 <button name="tripId" value="<%= trips.get(i).getId()%>" act type="submit" class="btn btn-dark">Reject</button>
+                                <button name="complete" value="<%= trips.get(i).getId()%>" act type="submit" class="btn btn-dark">Complete</button>
                             <% } %>
                         </td>
                       </tr>

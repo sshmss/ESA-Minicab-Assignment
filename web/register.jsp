@@ -26,6 +26,7 @@
                     <div id="login-column" class="col-md-6">
                         <div id="login-box" class="col-md-12">
                             <form id="login-form" class="form" action="register" method="post">
+                                <input type="hidden" name="role" id="role" value="<%= request.getParameter("role")%>">
                                 <h3 class="text-light mb-4">Sign up to Minicab</h3>
                                 <div class="form-group">
                                     <label for="username" class="text-light">Username</label><br>

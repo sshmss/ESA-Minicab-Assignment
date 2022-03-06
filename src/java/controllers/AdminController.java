@@ -19,6 +19,9 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import models.Payment;
+import models.Trip;
+import models.User;
 
 /**
  *
@@ -28,7 +31,7 @@ import java.sql.Statement;
 public class AdminController extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
+    
         UserDAO userdao = new UserDAO();
         request.setAttribute("nonAdmins", userdao.listOfNonAdmins());
         
@@ -36,6 +39,21 @@ public class AdminController extends HttpServlet {
         request.setAttribute("trips", tripdao.listOfTrips());
                         
         request.getRequestDispatcher("admin.jsp").forward(request, response);
+    }
+    
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        String remove = request.getParameter("remove");
+        if (remove != null && !remove.isEmpty()) {
+            UserDAO userdao = new UserDAO();
+            userdao.deleteUser(Integer.parseInt(remove));
+            
+            response.sendRedirect("admin");
+        }
+        else {
+            
+        }
+        
     }
 
 }

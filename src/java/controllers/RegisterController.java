@@ -6,6 +6,7 @@ package controllers;
  * and open the template in the editor.
  */
 
+import dao.UserDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -18,6 +19,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import models.User;
 
 /**
  *
@@ -35,7 +37,7 @@ public class RegisterController extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html");
         PrintWriter out = response.getWriter();
@@ -44,71 +46,35 @@ public class RegisterController extends HttpServlet {
         String username = request.getParameter("username");
         String password = request.getParameter("password");
         String confirmPassword = request.getParameter("confirmPassword");
+        String role = "customer";
+        if (request.getParameter("role") != null && !request.getParameter("role").isEmpty()) {
+            role = request.getParameter("role");
+        }
+        if (!confirmPassword.equals(password)) {
+            out.println("Password doesnt match");
+            return;
+        }
         
         //connect to db
         try {
-            Class.forName("com.mysql.jdbc.Driver");
-            //Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/minicab?useSSL=false", "root", "dJw3426A@");
-            Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/minicab?useSSL=false", "root", "root");
-            //Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/minicab?useSSL=false", "root", "pitiri");
-            
-
-            Statement stm = con.createStatement();
-            String sql = "select username, password, role from users where username='"+username+"' and password='"+password+"'";
-            ResultSet rs = stm.executeQuery(sql);
-            
-            if (rs.next()) {
-                HttpSession session = request.getSession(); //Creating a session
-                session.setMaxInactiveInterval(20 * 60);
-                session.setAttribute("role", rs.getString("role"));
-                session.setAttribute("username", username);
-                response.sendRedirect("home.jsp");
-            } else {
-                out.println("Username or password incorrect");
+            User user = new User(null, username, password, role);
+            UserDAO userDAO = new UserDAO();
+            boolean res = userDAO.addCustomer(user);
+            if (res) {
+                response.sendRedirect("index.html");
             }
-            con.close();
+            else {
+                out.println("Error occured in creatine user");
+            }
+            
+            
         } catch(Exception e) {
             System.out.println(e.getMessage());
         }
     }
-
-    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
-    /**
-     * Handles the HTTP <code>GET</code> method.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        request.getRequestDispatcher("register.jsp").forward(request, response);
     }
-
-    /**
-     * Handles the HTTP <code>POST</code> method.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        processRequest(request, response);
-    }
-
-    /**
-     * Returns a short description of the servlet.
-     *
-     * @return a String containing servlet description
-     */
-    @Override
-    public String getServletInfo() {
-        return "Short description";
-    }// </editor-fold>
-
 }

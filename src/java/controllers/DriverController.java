@@ -37,12 +37,20 @@ public class DriverController extends HttpServlet {
     
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        String complete = request.getParameter("complete");
+        if (complete != null && !complete.isEmpty()) {
+            TripDAO tripdao = new TripDAO();
+            tripdao.finishTrip(Integer.parseInt(complete));
+            response.sendRedirect("driver");
+        }
+        else {
+            TripDAO tripdao = new TripDAO();
+            tripdao.updateTripStatus(Integer.parseInt(request.getParameter("tripId")), (int) request.getSession().getAttribute("userId"));
+            request.setAttribute("trips", tripdao.listOfTrips());
+
+            request.getRequestDispatcher("driver.jsp").forward(request, response);
+        }
         
-        TripDAO tripdao = new TripDAO();
-        tripdao.updateTripStatus(Integer.parseInt(request.getParameter("tripId")));
-        request.setAttribute("trips", tripdao.listOfTrips());
-        
-        request.getRequestDispatcher("driver.jsp").forward(request, response);
     }
 
 }

@@ -170,7 +170,7 @@ public class UserDAO {
             stm = con.prepareStatement(sql);
             stm.setString(1, customer.getUsername());
             stm.setString(2, customer.getPassword());         
-            stm.setString(3, "customer");
+            stm.setString(3, customer.getRole());
 
             
             stm.executeUpdate();
@@ -185,28 +185,28 @@ public class UserDAO {
         return false;  // On failure, send a message from here.
     }
     
-    public String deleteCustomer(User customer) throws ClassNotFoundException {
+    public String deleteUser(int id) {
         Connection con = null;
         PreparedStatement  stm = null;
         ResultSet rs = null;
+        
+        try {
+            Class.forName("com.mysql.jdbc.Driver");
+        } catch (ClassNotFoundException e) {
+            Logger.getLogger(AdminController.class.getName()).log(Level.SEVERE, null, e);
+        }
 
         try {
+            String sql = "DELETE FROM users WHERE id = ?";
 
-            String sql = "DELETE FROM USERS WHERE username = ?";
-
-            Class.forName("com.mysql.jdbc.Driver");
             con = DriverManager.getConnection("jdbc:mysql://localhost:3306/minicab?useSSL=false", "root", "root");
             stm = con.prepareStatement(sql);
-            stm.setString(1,customer.getUsername() );
+            stm.setInt(1, id);
             
             int row = stm.executeUpdate();
             System.out.println(row);
 
-            
-            
-
             con.close();
-            deleteFromCustomerTable(customer);
             return "OK";
 
         } catch (SQLException e) {
