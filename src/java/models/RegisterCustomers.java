@@ -10,7 +10,8 @@ package models;
  * @author ahsan_764ad7k
  */
 public class RegisterCustomers {
-    private String fullName, username, password, email, customerID, address;
+    private String fullName, username, password, email, address;
+    private int customerID;
 
     public RegisterCustomers() {
     }
@@ -47,13 +48,15 @@ public class RegisterCustomers {
         this.email = email;
     }
 
-    public String getCustomerID() {
+    public int getCustomerID() {
         return customerID;
     }
 
-    public void setCustomerID(String customerID) {
+    public void setCustomerID(int customerID) {
         this.customerID = customerID;
     }
+
+    
 
     public String getAddress() {
         return address;
